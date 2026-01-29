@@ -1,0 +1,2283 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Toward Culturally Aligned LLMs through Ontology-Guided Multi-Agent Reasoning.">
+    <title>Toward Culturally Aligned LLMs through Ontology-Guided Multi-Agent Reasoning</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=Space+Grotesk:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+      :root {
+        --ink: #111111;
+        --muted: #4b4b4b;
+        --line: #e4e4e4;
+        --accent: #b4572c;
+        --paper: #ffffff;
+        --soft: #f7f7f5;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: "Source Serif 4", "Georgia", serif;
+        color: var(--ink);
+        background: #ffffff;
+      }
+
+      a {
+        color: inherit;
+        text-decoration: none;
+      }
+
+      a:hover {
+        text-decoration: underline;
+      }
+
+      .page {
+        max-width: 1120px;
+        margin: 0 auto;
+        padding: 64px 24px 120px;
+      }
+
+      .hero {
+        text-align: center;
+        margin-bottom: 28px;
+        animation: fadeUp 0.8s ease both;
+      }
+
+      h1,
+      h2,
+      h3 {
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        letter-spacing: -0.01em;
+      }
+
+      h1 {
+        font-size: clamp(40px, 6.2vw, 80px);
+        line-height: 1.03;
+        margin: 0 0 12px;
+      }
+
+      h2 {
+        font-size: clamp(26px, 3.6vw, 40px);
+        margin: 0 0 18px;
+      }
+
+      h3 {
+        font-size: clamp(20px, 2.6vw, 28px);
+        margin: 28px 0 14px;
+      }
+
+      p {
+        line-height: 1.7;
+        margin: 0 0 16px;
+      }
+
+      ul {
+        padding-left: 22px;
+        margin: 8px 0 16px;
+      }
+
+      li {
+        margin-bottom: 6px;
+      }
+
+      .authors {
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        letter-spacing: 0.24em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin: 0;
+        font-size: 12px;
+      }
+
+      .eyebrow {
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.26em;
+        text-transform: uppercase;
+        color: var(--muted);
+        display: block;
+        margin-bottom: 12px;
+      }
+
+      .abstract {
+        margin-top: 24px;
+        padding: 24px 0;
+        border-top: 1px solid var(--line);
+        border-bottom: 1px solid var(--line);
+      }
+
+      .abstract p:last-child {
+        margin-bottom: 0;
+      }
+
+      .abstract-footnote {
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .section-block {
+        margin-top: 56px;
+        opacity: 0;
+        transform: translateY(16px);
+        animation: fadeUp 0.8s ease forwards;
+        animation-delay: calc(var(--section-index, 0) * 0.07s);
+      }
+
+      .visual {
+        margin: 24px 0 40px;
+        padding: 16px;
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--paper);
+      }
+
+      .media {
+        width: 100%;
+        height: clamp(260px, 60vh, 720px);
+        border-radius: 14px;
+        overflow: hidden;
+        background: var(--soft);
+      }
+
+      .media-link {
+        display: block;
+        width: 100%;
+        height: 100%;
+      }
+
+      .media img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        display: block;
+      }
+
+      .media-case {
+        height: auto;
+      }
+
+      .media-case .media-link {
+        height: auto;
+      }
+
+      .media-case img {
+        height: auto;
+        object-fit: cover;
+      }
+
+      .media-stack {
+        display: grid;
+        gap: 16px;
+      }
+
+      .media-stack .media {
+        height: clamp(240px, 52vh, 640px);
+      }
+
+      figcaption {
+        margin-top: 14px;
+        font-size: 14px;
+        color: var(--muted);
+        line-height: 1.6;
+      }
+
+      .table-wrap {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 640px;
+        font-size: 14px;
+      }
+
+      thead th {
+        text-align: left;
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        font-size: 13px;
+        letter-spacing: 0.01em;
+      }
+
+      th,
+      td {
+        border-bottom: 1px solid var(--line);
+        padding: 8px 10px;
+        vertical-align: top;
+      }
+
+      td.num {
+        text-align: right;
+        font-variant-numeric: tabular-nums;
+      }
+
+      tr.group-row td {
+        background: #f3f3f3;
+        font-weight: 600;
+      }
+
+      .table-wide {
+        min-width: 880px;
+      }
+
+      .table-narrow {
+        min-width: 520px;
+      }
+
+      .cell-lines div {
+        margin-bottom: 6px;
+      }
+
+      .cell-lines div:last-child {
+        margin-bottom: 0;
+      }
+
+      .acronym {
+        font-weight: 700;
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+      }
+
+      .underline {
+        text-decoration: underline;
+        text-decoration-thickness: 2px;
+        text-underline-offset: 3px;
+      }
+
+      .prompt-body {
+        margin-top: 12px;
+      }
+
+      .prompt-title {
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        font-size: 12px;
+        letter-spacing: 0.22em;
+        text-transform: uppercase;
+        color: var(--muted);
+        margin-bottom: 10px;
+      }
+
+      .prompt-block {
+        border: 2px solid var(--line);
+        background: linear-gradient(180deg, #fbfbfa 0%, #ffffff 100%);
+      }
+
+      .prompt-banner {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        gap: 8px 12px;
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        font-size: 11px;
+        letter-spacing: 0.16em;
+        text-transform: uppercase;
+        color: var(--muted);
+        border-bottom: 1px dashed var(--line);
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+      }
+
+      .prompt-chip {
+        background: var(--ink);
+        color: #ffffff;
+        padding: 4px 10px;
+        border-radius: 999px;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+      }
+
+      .prompt-name {
+        font-weight: 600;
+      }
+
+      .prompt-part {
+        margin-left: auto;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        padding: 3px 10px;
+        letter-spacing: 0.12em;
+      }
+
+      .prompt-footer {
+        margin-top: 16px;
+        padding-top: 10px;
+        border-top: 1px dashed var(--line);
+        font-family: "Space Grotesk", "Trebuchet MS", sans-serif;
+        font-size: 10px;
+        letter-spacing: 0.18em;
+        text-transform: uppercase;
+        color: var(--muted);
+        text-align: right;
+      }
+
+      pre {
+        background: #f7f7f7;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 12px;
+        overflow-x: auto;
+        font-family: "IBM Plex Mono", "Courier New", monospace;
+        font-size: 12px;
+        line-height: 1.5;
+      }
+
+      code {
+        font-family: "IBM Plex Mono", "Courier New", monospace;
+        font-size: 0.95em;
+      }
+
+      @keyframes fadeUp {
+        from {
+          opacity: 0;
+          transform: translateY(18px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .hero,
+        .section-block {
+          animation: none;
+          opacity: 1;
+          transform: none;
+        }
+      }
+
+      @media (max-width: 840px) {
+        .page {
+          padding: 48px 18px 90px;
+        }
+
+        .abstract {
+          padding: 20px 0;
+        }
+
+        .media {
+          height: 52vh;
+        }
+
+        .media-stack .media {
+          height: 46vh;
+        }
+
+        table {
+          font-size: 13px;
+        }
+
+        .prompt-part {
+          margin-left: 0;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page">
+      <header class="hero">
+        <h1>Toward Culturally Aligned LLMs through Ontology-Guided Multi-Agent Reasoning</h1>
+        <p class="authors">Anonymous Authors</p>
+      </header>
+
+      <section id="abstract" class="abstract section-block" style="--section-index: 0;">
+        <span class="eyebrow">Abstract</span>
+        <p>
+          Large Language Models (LLMs) increasingly support culturally sensitive decision making, yet often exhibit
+          misalignment due to skewed pretraining data and the absence of structured value representations. Existing
+          methods can steer outputs, but often lack demographic grounding and treat values as independent, unstructured
+          signals, reducing consistency and interpretability. We propose <em>OG-MAR</em>, an
+          <span class="acronym">O</span>ntology <span class="acronym">G</span>uided
+          <span class="acronym">M</span>ulti-<span class="acronym">A</span>gent
+          <span class="acronym">R</span>easoning framework. <em>OG-MAR</em> summarizes respondent-specific values from
+          the World Values Survey (WVS) and constructs a global cultural ontology by eliciting relations over a fixed
+          taxonomy via competency questions. At inference time, it retrieves ontology-consistent relations and
+          demographically similar profiles to instantiate multiple value-persona agents, whose outputs are synthesized
+          by a judgment agent that enforces ontology consistency and demographic proximity. Experiments on regional
+          social-survey benchmarks across four LLM backbones show that <em>OG-MAR</em> improves cultural alignment and
+          robustness over competitive baselines, while producing more transparent reasoning traces.
+        </p>
+        <p class="abstract-footnote">
+          Code link:
+          <a href="https://anonymous.4open.science/r/OG-MAR-Toward-Culturally-Aligned-LLMs-through-Ontology-Guided-Multi-Agent-Reasoning-50B1/README.md">
+            <code>https://anonymous.4open.science/r/OG-MAR-Toward-Culturally-Aligned-LLMs-through-Ontology-Guided-Multi-Agent-Reasoning-50B1/README.md</code>
+          </a>
+        </p>
+      </section>
+
+      <section class="section-block" style="--section-index: 1;">
+        <h2>Proposed Framework</h2>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/main_architecture.pdf"><img src="assets/fig/main_architecture.png" alt="Figure: main architecture" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Overall architecture of the <em>OG-MAR</em> framework.</strong> The pipeline illustrates the overall
+            architecture of <em>OG-MAR</em>. The pipeline begins with Data Preprocessing &amp; Ontology Construction (left).
+            During inference, for a given query and target demographics, it performs Ontology &amp; Demographic Retrieval
+            (center) to gather relevant context. This context is used to instantiate multiple Persona Agents (top right)
+            whose outputs are synthesized by a Judgment Agent (bottom right) to produce the final, culturally aligned
+            prediction.
+          </figcaption>
+        </figure>
+
+        <h3>Data Preprocessing &amp; Structuring</h3>
+        <figure class="visual">
+          <div class="media-stack">
+            <div class="media">
+              <a class="media-link" href="assets/fig/ontology_final_stage_main.pdf"><img src="assets/fig/ontology_final_stage_main.png" alt="Figure: ontology final stage main" loading="lazy" decoding="async"></a>
+            </div>
+            <div class="media">
+              <a class="media-link" href="assets/fig/ontology_plt_legend_1.pdf"><img src="assets/fig/ontology_plt_legend_1.png" alt="Figure: ontology plt legend 1" loading="lazy" decoding="async"></a>
+            </div>
+          </div>
+          <figcaption>
+            Visualization of the final ontology structure. The ontology comprises 76 classes and 150 pairs of object
+            properties, forming a comprehensive semantic network.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 2;">
+        <h2>Experiment Results</h2>
+        <figure class="visual table-block">
+          <figcaption>
+            Accuracy of baseline methods across regional datasets. <strong>Bold</strong> text indicates the best
+            performance, <span class="underline">underlined</span> text the second-best performance. * denotes
+            significant improvements (paired t-test with Holm--Bonferroni correction, p &lt; 0.05) over all baseline
+            model(s). &dagger; denotes our proposed method.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Method</th>
+                  <th>EVS <em>(Europe)</em></th>
+                  <th>GSS <em>(Global)</em></th>
+                  <th>CGSS <em>(China)</em></th>
+                  <th>ISD <em>(India)</em></th>
+                  <th>AFRO <em>(Africa)</em></th>
+                  <th>LAPOP</th>
+                  <th>Avg</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="group-row">
+                  <td colspan="8">GPT-4o mini</td>
+                </tr>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td class="num">0.5606</td>
+                  <td class="num">0.5164</td>
+                  <td class="num">0.5847</td>
+                  <td class="num">0.6139</td>
+                  <td class="num">0.5324</td>
+                  <td class="num">0.5760</td>
+                  <td class="num">0.5640</td>
+                </tr>
+                <tr>
+                  <td>Role (2024)</td>
+                  <td class="num">0.5892</td>
+                  <td class="num">0.5184</td>
+                  <td class="num"><span class="underline">0.6014</span></td>
+                  <td class="num">0.6060</td>
+                  <td class="num"><span class="underline">0.5505</span></td>
+                  <td class="num">0.5674</td>
+                  <td class="num">0.5722</td>
+                </tr>
+                <tr>
+                  <td>Self-consistency (2022)</td>
+                  <td class="num">0.5558</td>
+                  <td class="num">0.4920</td>
+                  <td class="num">0.5631</td>
+                  <td class="num">0.5976</td>
+                  <td class="num">0.5224</td>
+                  <td class="num">0.5551</td>
+                  <td class="num">0.5477</td>
+                </tr>
+                <tr>
+                  <td>Debate (2025)</td>
+                  <td class="num">0.5985</td>
+                  <td class="num"><span class="underline">0.5509</span></td>
+                  <td class="num">0.5993</td>
+                  <td class="num"><strong>0.6568</strong></td>
+                  <td class="num">0.5343</td>
+                  <td class="num">0.5306</td>
+                  <td class="num">0.5784</td>
+                </tr>
+                <tr>
+                  <td>ValuesRAG (2025)</td>
+                  <td class="num"><span class="underline">0.6127</span></td>
+                  <td class="num"><strong>0.5589</strong></td>
+                  <td class="num">0.5889</td>
+                  <td class="num"><span class="underline">0.6420</span></td>
+                  <td class="num"><strong>0.5654</strong></td>
+                  <td class="num"><span class="underline">0.6085</span></td>
+                  <td class="num"><span class="underline">0.5961</span></td>
+                </tr>
+                <tr>
+                  <td>OG-MAR (Ours)&dagger;</td>
+                  <td class="num"><strong>0.6206</strong>*</td>
+                  <td class="num">0.5480</td>
+                  <td class="num"><strong>0.6509</strong>*</td>
+                  <td class="num">0.6192</td>
+                  <td class="num">0.5389</td>
+                  <td class="num"><strong>0.6268</strong></td>
+                  <td class="num"><strong>0.6007</strong>*</td>
+                </tr>
+                <tr class="group-row">
+                  <td colspan="8">Gemini 2.5 Flash Lite</td>
+                </tr>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td class="num">0.5681</td>
+                  <td class="num">0.4957</td>
+                  <td class="num">0.6467</td>
+                  <td class="num">0.5000</td>
+                  <td class="num">0.5282</td>
+                  <td class="num">0.6225</td>
+                  <td class="num">0.5602</td>
+                </tr>
+                <tr>
+                  <td>Role (2024)</td>
+                  <td class="num">0.5786</td>
+                  <td class="num">0.4992</td>
+                  <td class="num"><span class="underline">0.6669</span></td>
+                  <td class="num">0.5521</td>
+                  <td class="num">0.5313</td>
+                  <td class="num">0.5852</td>
+                  <td class="num">0.5689</td>
+                </tr>
+                <tr>
+                  <td>Self-consistency (2022)</td>
+                  <td class="num">0.5489</td>
+                  <td class="num">0.4728</td>
+                  <td class="num">0.6063</td>
+                  <td class="num">0.4705</td>
+                  <td class="num">0.5182</td>
+                  <td class="num"><span class="underline">0.6268</span></td>
+                  <td class="num">0.5406</td>
+                </tr>
+                <tr>
+                  <td>Debate (2025)</td>
+                  <td class="num">0.5977</td>
+                  <td class="num">0.5138</td>
+                  <td class="num">0.6348</td>
+                  <td class="num"><span class="underline">0.6335</span></td>
+                  <td class="num">0.5046</td>
+                  <td class="num">0.5331</td>
+                  <td class="num">0.5696</td>
+                </tr>
+                <tr>
+                  <td>ValuesRAG (2025)</td>
+                  <td class="num"><span class="underline">0.6075</span></td>
+                  <td class="num"><span class="underline">0.5376</span></td>
+                  <td class="num">0.6084</td>
+                  <td class="num">0.6041</td>
+                  <td class="num"><span class="underline">0.5472</span></td>
+                  <td class="num">0.5339</td>
+                  <td class="num"><span class="underline">0.5731</span></td>
+                </tr>
+                <tr>
+                  <td>OG-MAR (Ours)&dagger;</td>
+                  <td class="num"><strong>0.6249</strong>*</td>
+                  <td class="num"><strong>0.5489</strong>*</td>
+                  <td class="num"><strong>0.7017</strong>*</td>
+                  <td class="num"><strong>0.7007</strong>*</td>
+                  <td class="num"><strong>0.5701</strong>*</td>
+                  <td class="num"><strong>0.6385</strong>*</td>
+                  <td class="num"><strong>0.6308</strong>*</td>
+                </tr>
+                <tr class="group-row">
+                  <td colspan="8">QWEN 2.5</td>
+                </tr>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td class="num">0.5199</td>
+                  <td class="num">0.5069</td>
+                  <td class="num">0.2704</td>
+                  <td class="num"><span class="underline">0.7222</span></td>
+                  <td class="num">0.4814</td>
+                  <td class="num">0.4908</td>
+                  <td class="num">0.4986</td>
+                </tr>
+                <tr>
+                  <td>Role (2024)</td>
+                  <td class="num">0.5357</td>
+                  <td class="num">0.5037</td>
+                  <td class="num">0.3463</td>
+                  <td class="num"><strong>0.7452</strong></td>
+                  <td class="num"><span class="underline">0.5014</span></td>
+                  <td class="num">0.4712</td>
+                  <td class="num">0.5172</td>
+                </tr>
+                <tr>
+                  <td>Self-consistency (2022)</td>
+                  <td class="num">0.5096</td>
+                  <td class="num">0.4975</td>
+                  <td class="num">0.3289</td>
+                  <td class="num">0.6278</td>
+                  <td class="num">0.4080</td>
+                  <td class="num">0.4975</td>
+                  <td class="num">0.4782</td>
+                </tr>
+                <tr>
+                  <td>Debate (2025)</td>
+                  <td class="num">0.5511</td>
+                  <td class="num">0.5174</td>
+                  <td class="num">0.4578</td>
+                  <td class="num">0.6320</td>
+                  <td class="num">0.4875</td>
+                  <td class="num">0.4332</td>
+                  <td class="num">0.5132</td>
+                </tr>
+                <tr>
+                  <td>ValuesRAG (2025)</td>
+                  <td class="num"><span class="underline">0.5538</span></td>
+                  <td class="num"><span class="underline">0.5215</span></td>
+                  <td class="num"><span class="underline">0.4697</span></td>
+                  <td class="num">0.6591</td>
+                  <td class="num">0.4724</td>
+                  <td class="num"><span class="underline">0.5268</span></td>
+                  <td class="num"><span class="underline">0.5339</span></td>
+                </tr>
+                <tr>
+                  <td>OG-MAR (Ours)&dagger;</td>
+                  <td class="num"><strong>0.5898</strong>*</td>
+                  <td class="num"><strong>0.5325</strong>*</td>
+                  <td class="num"><strong>0.5220</strong>*</td>
+                  <td class="num">0.6599</td>
+                  <td class="num"><strong>0.5180</strong></td>
+                  <td class="num"><strong>0.6005</strong></td>
+                  <td class="num"><strong>0.5705</strong>*</td>
+                </tr>
+                <tr class="group-row">
+                  <td colspan="8">EXAONE 3.5</td>
+                </tr>
+                <tr>
+                  <td>Zero-shot</td>
+                  <td class="num">0.5143</td>
+                  <td class="num">0.5311</td>
+                  <td class="num">0.2885</td>
+                  <td class="num">0.6041</td>
+                  <td class="num">0.4054</td>
+                  <td class="num">0.5006</td>
+                  <td class="num">0.4740</td>
+                </tr>
+                <tr>
+                  <td>Role (2024)</td>
+                  <td class="num">0.5319</td>
+                  <td class="num">0.5326</td>
+                  <td class="num">0.3129</td>
+                  <td class="num">0.6048</td>
+                  <td class="num">0.4077</td>
+                  <td class="num">0.4602</td>
+                  <td class="num">0.4750</td>
+                </tr>
+                <tr>
+                  <td>Self-consistency (2022)</td>
+                  <td class="num">0.5490</td>
+                  <td class="num">0.5266</td>
+                  <td class="num">0.2697</td>
+                  <td class="num">0.6122</td>
+                  <td class="num">0.4086</td>
+                  <td class="num">0.5368</td>
+                  <td class="num">0.4838</td>
+                </tr>
+                <tr>
+                  <td>Debate (2025)</td>
+                  <td class="num"><span class="underline">0.5713</span></td>
+                  <td class="num">0.5407</td>
+                  <td class="num">0.5624</td>
+                  <td class="num"><span class="underline">0.6773</span></td>
+                  <td class="num"><span class="underline">0.4995</span></td>
+                  <td class="num">0.4939</td>
+                  <td class="num">0.5575</td>
+                </tr>
+                <tr>
+                  <td>ValuesRAG (2025)</td>
+                  <td class="num">0.5172</td>
+                  <td class="num"><span class="underline">0.5520</span></td>
+                  <td class="num"><span class="underline">0.5833</span></td>
+                  <td class="num">0.6446</td>
+                  <td class="num">0.4794</td>
+                  <td class="num"><span class="underline">0.5913</span></td>
+                  <td class="num"><span class="underline">0.5631</span></td>
+                </tr>
+                <tr>
+                  <td>OG-MAR (Ours)&dagger;</td>
+                  <td class="num"><strong>0.6080</strong>*</td>
+                  <td class="num"><strong>0.5636</strong></td>
+                  <td class="num"><strong>0.6307</strong>*</td>
+                  <td class="num"><strong>0.7810</strong>*</td>
+                  <td class="num"><strong>0.5045</strong>*</td>
+                  <td class="num"><strong>0.7002</strong>*</td>
+                  <td class="num"><strong>0.6313</strong>*</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 3;">
+        <h2>Ablation Studies</h2>
+        <h3>Varying the Number of Retrieved Individuals</h3>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/ablation_k_overall_avg.pdf"><img src="assets/fig/ablation_k_overall_avg.png" alt="Figure: ablation k overall avg" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Performance comparison of four models across K in {1, 3, 5, 10} on average. Red vertical dashed lines
+            indicate the best K and gray horizontal lines show the overall mean accuracy.
+          </figcaption>
+        </figure>
+
+        <h3>Impact of Value Inference Generation</h3>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/value_profile_vs_main_2x2_pastel.pdf"><img src="assets/fig/value_profile_vs_main_2x2_pastel.png" alt="Figure: value profile vs main 2x2 pastel" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Performance comparison between <em>OG-MAR</em> and the Value Inference Variant. Accuracy over four models on
+            six regional datasets. Dashed lines show per-method average accuracy; red boxes report the average gap
+            (Avg Delta = <em>OG-MAR</em> - Variant).
+          </figcaption>
+        </figure>
+
+        <h3>Impact of Multi-Persona Reasoning</h3>
+        <figure class="visual table-block">
+          <figcaption>
+            Average accuracy of the full <em>OG-MAR</em> framework and the single-judge variant across four LLMs.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-narrow">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Method</th>
+                  <th>Avg. Accuracy</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="2">GPT-4o mini</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6007</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5987</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">Gemini 2.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6308</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.6022</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">QWEN 2.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.5705</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5311</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">EXAONE 3.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6316</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5627</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/human_evaluation_average_results.pdf"><img src="assets/fig/human_evaluation_average_results.png" alt="Figure: human evaluation average results" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Average human evaluation scores (5-point Likert scale) across three tasks: Persona Fidelity (Consistency,
+            Grounding), Judgment Logic (Synthesis, Context), and Retrieval Validity (Relevance). Scores are averaged
+            over nine expert raters.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 4;">
+        <h2>Discussion</h2>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/acc_mae_vs_token_rolefixed.pdf"><img src="assets/fig/acc_mae_vs_token_rolefixed.png" alt="Figure: acc mae vs token rolefixed" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Performance--cost trade-off across methods. Left: accuracy vs total tokens (higher is better). Right: MAE vs
+            total tokens (lower is better). Markers denote methods; the dashed line shows performance changes as token
+            usage increases.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 5;">
+        <h2>Training Details and Loss Curves</h2>
+        <h3>DeBERTa-v2-xxlarge Fine-tuning</h3>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/deberta_loss_epochs_latex.pdf"><img src="assets/fig/deberta_loss_epochs_latex.png" alt="Figure: deberta loss epochs latex" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Training and validation loss curves for DeBERTa-v2-xxlarge fine-tuning.</strong> The x-axis represents
+            epochs. Training loss (blue solid line) exhibits minor fluctuations typical of small-batch optimization,
+            while validation loss (red dashed line, evaluated every 48 steps) decreases monotonically from 1.61 to 0.31
+            across three epochs, indicating effective learning without overfitting.
+          </figcaption>
+        </figure>
+
+        <h3>Value Category Classification</h3>
+        <figure class="visual table-block">
+          <figcaption>
+            <strong>Topic classification performance on six regional datasets.</strong> Top-k: fraction of questions where
+            the true category appears in top-k predictions. F1<sub>macro</sub>: macro-averaged F1 across 12 categories.
+            All metrics in [0,1].
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-narrow">
+              <thead>
+                <tr>
+                  <th>Dataset</th>
+                  <th>Top-1</th>
+                  <th>Top-2</th>
+                  <th>Top-3</th>
+                  <th>F1<sub>macro</sub></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Afrobarometer</td>
+                  <td class="num">0.5037</td>
+                  <td class="num">0.6875</td>
+                  <td class="num">0.7574</td>
+                  <td class="num">0.3070</td>
+                </tr>
+                <tr>
+                  <td>CGSS</td>
+                  <td class="num">0.3375</td>
+                  <td class="num">0.5079</td>
+                  <td class="num">0.6656</td>
+                  <td class="num">0.2480</td>
+                </tr>
+                <tr>
+                  <td>EVS</td>
+                  <td class="num">0.4315</td>
+                  <td class="num">0.5560</td>
+                  <td class="num">0.6680</td>
+                  <td class="num">0.3485</td>
+                </tr>
+                <tr>
+                  <td>GSS</td>
+                  <td class="num">0.4545</td>
+                  <td class="num">0.6667</td>
+                  <td class="num">0.7765</td>
+                  <td class="num">0.3636</td>
+                </tr>
+                <tr>
+                  <td>ISD</td>
+                  <td class="num">0.5439</td>
+                  <td class="num">0.7071</td>
+                  <td class="num">0.7950</td>
+                  <td class="num">0.2799</td>
+                </tr>
+                <tr>
+                  <td>LAPOP</td>
+                  <td class="num">0.4396</td>
+                  <td class="num">0.6577</td>
+                  <td class="num">0.7349</td>
+                  <td class="num">0.3146</td>
+                </tr>
+                <tr>
+                  <td><strong>WVS (val)</strong></td>
+                  <td class="num"><strong>0.9583</strong></td>
+                  <td class="num"><strong>1.0000</strong></td>
+                  <td class="num"><strong>1.0000</strong></td>
+                  <td class="num"><strong>0.8250</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 6;">
+        <h2>Dataset Details</h2>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/world_map.pdf"><img src="assets/fig/world_map.png" alt="Figure: world map" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Geographic coverage of cultural value datasets used in this study. Each country is colored according to its
+            primary data source, prioritizing regional surveys over the global World Values Survey. Regional datasets
+            include the General Social Survey for the United States, the European Values Study for Europe, Afrobarometer
+            for Africa, the Chinese General Social Survey for China, and the India Social Dataset for India. Countries
+            without regional coverage are represented by WVS data shown in gray. Color intensity reflects participant
+            count on a logarithmic scale, ranging from 447 to 29,999 respondents per country. This multimodal approach
+            ensures both regional specificity and global breadth in cultural alignment research.
+          </figcaption>
+        </figure>
+
+        <figure class="visual table-block">
+          <figcaption>
+            Summary statistics of the retrieval corpus (WVS) and five test datasets. For WVS, we report the Wave 7
+            (2017--2022) subset and preprocessing as defined in <em>WorldValuesBench</em> (Zhao et al.). For test
+            datasets, "#Value Qs" denotes the value-related items retained after our preprocessing/topic mapping (not
+            necessarily the full questionnaire length).
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Dataset</th>
+                  <th>Type</th>
+                  <th>Region</th>
+                  <th>Wave / Year</th>
+                  <th>#Countries</th>
+                  <th>#Respondents</th>
+                  <th>#Value Qs</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="group-row">
+                  <td colspan="7"><em>Retrieval Corpus</em></td>
+                </tr>
+                <tr>
+                  <td>WVS (World Values Survey)</td>
+                  <td>Retrieval</td>
+                  <td>Global</td>
+                  <td>2017--2022</td>
+                  <td class="num">64</td>
+                  <td class="num">94,728</td>
+                  <td class="num">239</td>
+                </tr>
+                <tr class="group-row">
+                  <td colspan="7"><em>Test Datasets</em></td>
+                </tr>
+                <tr>
+                  <td>EVS (European Values Study)</td>
+                  <td>Test</td>
+                  <td>Europe</td>
+                  <td>2017</td>
+                  <td class="num">--</td>
+                  <td class="num">59,438</td>
+                  <td class="num">211</td>
+                </tr>
+                <tr>
+                  <td>GSS (General Social Survey)</td>
+                  <td>Test</td>
+                  <td>U.S. (N. America)</td>
+                  <td>2021--2022</td>
+                  <td class="num">--</td>
+                  <td class="num">8,181</td>
+                  <td class="num">44</td>
+                </tr>
+                <tr>
+                  <td>CGSS (Chinese General Social Survey)</td>
+                  <td>Test</td>
+                  <td>China (E. Asia)</td>
+                  <td>2021</td>
+                  <td class="num">--</td>
+                  <td class="num">~8,148</td>
+                  <td class="num">58</td>
+                </tr>
+                <tr>
+                  <td>ISD (Pew India Survey Dataset)</td>
+                  <td>Test</td>
+                  <td>India (S. Asia)</td>
+                  <td>2019--2020</td>
+                  <td class="num">--</td>
+                  <td class="num">29,999</td>
+                  <td class="num">33</td>
+                </tr>
+                <tr>
+                  <td>LAPOP (AmericasBarometer)</td>
+                  <td>Test</td>
+                  <td>Latin America</td>
+                  <td>2021</td>
+                  <td class="num">--</td>
+                  <td class="num">64,352</td>
+                  <td class="num">48</td>
+                </tr>
+                <tr>
+                  <td>Afrobarometer</td>
+                  <td>Test</td>
+                  <td>Africa</td>
+                  <td>2022</td>
+                  <td class="num">--</td>
+                  <td class="num">~48,100</td>
+                  <td class="num">144</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+
+        <figure class="visual table-block">
+          <figcaption>
+            Data sources used in our experiments. We use the World Values Survey (WVS) as the retrieval corpus, and
+            evaluate generalization on six external test datasets (EVS, GSS, CGSS, ISD, LAPOP, and Afrobarometer), with
+            official access links provided for reproducibility.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-narrow">
+              <thead>
+                <tr>
+                  <th>Dataset</th>
+                  <th>Link</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="group-row">
+                  <td colspan="2"><em>Retrieval Corpus</em></td>
+                </tr>
+                <tr>
+                  <td>WVS</td>
+                  <td><a href="https://www.worldvaluessurvey.org/wvs.jsp">https://www.worldvaluessurvey.org/wvs.jsp</a></td>
+                </tr>
+                <tr class="group-row">
+                  <td colspan="2"><em>Test Datasets</em></td>
+                </tr>
+                <tr>
+                  <td>EVS (European Values Study)</td>
+                  <td><a href="https://europeanvaluesstudy.eu">https://europeanvaluesstudy.eu</a></td>
+                </tr>
+                <tr>
+                  <td>GSS (General Social Survey)</td>
+                  <td><a href="https://gss.norc.org">https://gss.norc.org</a></td>
+                </tr>
+                <tr>
+                  <td>CGSS (Chinese General Social Survey)</td>
+                  <td><a href="https://cgss.ruc.edu.cn">https://cgss.ruc.edu.cn</a></td>
+                </tr>
+                <tr>
+                  <td>ISD (Pew India Survey Dataset)</td>
+                  <td>
+                    <a href="https://www.pewresearch.org/dataset/india-survey-dataset/">
+                      https://www.pewresearch.org/dataset/india-survey-dataset/
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>LAPOP (AmericasBarometer)</td>
+                  <td><a href="https://www.vanderbilt.edu/lapop">https://www.vanderbilt.edu/lapop</a></td>
+                </tr>
+                <tr>
+                  <td>Afrobarometer</td>
+                  <td><a href="https://www.afrobarometer.org">https://www.afrobarometer.org</a></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/Regional_Dataset_Distribution_Pie.pdf"><img src="assets/fig/Regional_Dataset_Distribution_Pie.png" alt="Figure: Regional Dataset Distribution Pie" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>Distribution of selected value questions across regional datasets.</figcaption>
+        </figure>
+
+        <figure class="visual table-block">
+          <figcaption>
+            <strong>Distribution of Values-related Questions in WVS.</strong> The questions were categorized into 12
+            topics with a total of 253 questions covering most of the dimensions of values.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-narrow">
+              <thead>
+                <tr>
+                  <th>Topic</th>
+                  <th>Count</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Social Values, Norms, Stereotypes</td>
+                  <td class="num">45</td>
+                </tr>
+                <tr>
+                  <td>Happiness and Wellbeing</td>
+                  <td class="num">11</td>
+                </tr>
+                <tr>
+                  <td>Social Capital, Trust and Organizational Membership</td>
+                  <td class="num">47</td>
+                </tr>
+                <tr>
+                  <td>Economic Values</td>
+                  <td class="num">6</td>
+                </tr>
+                <tr>
+                  <td>Perceptions of Corruption</td>
+                  <td class="num">9</td>
+                </tr>
+                <tr>
+                  <td>Perceptions of Migration</td>
+                  <td class="num">10</td>
+                </tr>
+                <tr>
+                  <td>Perceptions of Security</td>
+                  <td class="num">21</td>
+                </tr>
+                <tr>
+                  <td>Perceptions about Science and Technology</td>
+                  <td class="num">6</td>
+                </tr>
+                <tr>
+                  <td>Religious Values</td>
+                  <td class="num">12</td>
+                </tr>
+                <tr>
+                  <td>Ethical Values</td>
+                  <td class="num">23</td>
+                </tr>
+                <tr>
+                  <td>Political Interest and Political Participation</td>
+                  <td class="num">35</td>
+                </tr>
+                <tr>
+                  <td>Political Culture and Political Regimes</td>
+                  <td class="num">25</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 7;">
+        <h2>Extract Representative Sample to Cluster</h2>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/voronoi_cluster.pdf"><img src="assets/fig/voronoi_cluster.png" alt="Figure: voronoi cluster" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Voronoi visualization of Faiss k-means centroids for six embedding datasets. Blue crosses denote cluster
+            centroids, colored dots indicate embedded samples, and light polygons show Voronoi regions in a 2D
+            projection, providing an intuitive overview of the spatial distribution and structure of the embedding
+            space across datasets.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 8;">
+        <h2>Human Evaluation of Reasoning Traces</h2>
+        <h3>Results</h3>
+        <figure class="visual table-block">
+          <figcaption>
+            Human evaluation results (N=9) on a 5-point Likert scale. Task 1 measures Persona Fidelity (Consistency,
+            Grounding), Task 2 measures Judgment Logic (Synthesis, Context), and Task 3 measures Retrieval Validity
+            (Relevance).
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Dataset (Region)</th>
+                  <th>Consistency</th>
+                  <th>Grounding</th>
+                  <th>Synthesis</th>
+                  <th>Context</th>
+                  <th>Relevance</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>GSS (N.A.)</td>
+                  <td class="num">3.76</td>
+                  <td class="num">3.97</td>
+                  <td class="num"><strong>3.79</strong></td>
+                  <td class="num"><strong>3.79</strong></td>
+                  <td class="num">3.63</td>
+                </tr>
+                <tr>
+                  <td>CGSS (E. Asia)</td>
+                  <td class="num">3.76</td>
+                  <td class="num"><strong>4.02</strong></td>
+                  <td class="num">3.65</td>
+                  <td class="num">3.65</td>
+                  <td class="num">3.56</td>
+                </tr>
+                <tr>
+                  <td>AFRO (Africa)</td>
+                  <td class="num"><strong>3.86</strong></td>
+                  <td class="num">3.89</td>
+                  <td class="num">3.77</td>
+                  <td class="num">3.77</td>
+                  <td class="num">3.60</td>
+                </tr>
+                <tr>
+                  <td>EVS (Europe)</td>
+                  <td class="num">3.77</td>
+                  <td class="num">3.80</td>
+                  <td class="num">3.77</td>
+                  <td class="num">3.77</td>
+                  <td class="num"><strong>3.72</strong></td>
+                </tr>
+                <tr>
+                  <td>ISD (S. Asia)</td>
+                  <td class="num">3.82</td>
+                  <td class="num">3.80</td>
+                  <td class="num">3.67</td>
+                  <td class="num">3.67</td>
+                  <td class="num">3.62</td>
+                </tr>
+                <tr>
+                  <td>LAPOP (L. Am.)</td>
+                  <td class="num">3.70</td>
+                  <td class="num">3.78</td>
+                  <td class="num">3.67</td>
+                  <td class="num">3.67</td>
+                  <td class="num">3.71</td>
+                </tr>
+                <tr>
+                  <td><strong>Average</strong></td>
+                  <td class="num"><strong>3.78</strong></td>
+                  <td class="num"><strong>3.88</strong></td>
+                  <td class="num"><strong>3.72</strong></td>
+                  <td class="num"><strong>3.72</strong></td>
+                  <td class="num"><strong>3.64</strong></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 9;">
+        <h2>Prompt</h2>
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 01</span>
+            <span class="prompt-name">Persona Agent</span>
+            <span class="prompt-part">Single-Part</span>
+          </div>
+          <figcaption><strong>Prompt for Persona Agent.</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template</div>
+            <p><strong>Task:</strong></p>
+            <ul>
+              <li>You are Persona Agent <code>{persona_id}</code>.</li>
+              <li>
+                Given <code>{question}</code> and <code>{options_text}</code>, select <strong>exactly one</strong> option
+                that this persona would choose, based <strong>only</strong> on the persona's internal worldview.
+              </li>
+              <li>
+                Use <strong>only</strong> the provided persona-defining inputs: <code>{demographics_text}</code>,
+                <code>{value_summaries_text}</code>, and <code>{hyper_edges_text}</code>.
+              </li>
+              <li>
+                <strong>Prohibited:</strong> any external knowledge, culturally neutral/common-sense reasoning, or
+                unstated assumptions beyond the inputs.
+              </li>
+            </ul>
+
+            <p><strong>Inputs:</strong></p>
+            <ul>
+              <li><strong>[DEMOGRAPHICS]</strong>: <code>{demographics_text}</code></li>
+              <li><strong>[VALUE PROFILES]</strong>: <code>{value_summaries_text}</code></li>
+              <li><strong>[ONTOLOGY HYPER-NODES]</strong>: <code>{hyper_nodes_text}</code></li>
+              <li><strong>[RESPONSE OPTIONS]</strong>: <code>{options_text}</code></li>
+              <li><strong>[USER QUESTION]</strong>: <code>{question}</code></li>
+            </ul>
+
+            <p><strong>Strict Rules:</strong></p>
+            <ul>
+              <li>Stay in persona; use only the provided inputs; no external knowledge or assumptions.</li>
+              <li>Integrate <strong>all</strong> value summaries and apply <strong>all</strong> hyper-edges explicitly (e.g., support/conflict/amplification).</li>
+              <li>Cite <strong>&gt;= 2</strong> demographic attributes; explain internal alignment, at least one conflict, and how it is resolved.</li>
+              <li>Choose <strong>exactly one</strong> option; output <strong>only one</strong> valid JSON object and nothing else.</li>
+              <li><code>reasoning</code> must be <strong>&gt;= 250</strong> words and explicitly cover value/edge integration and the most influential demographics.</li>
+            </ul>
+
+            <p><strong>Output Format (JSON only):</strong></p>
+            <pre><code>{
+  "persona_id": "{persona_id}",
+  "chosen_answer": "&lt;value&gt;: &lt;text&gt;",
+  "reasoning": "...",
+  "alignment_factors": {
+    "demographic": "...",
+    "value_summaries_used": [],
+    "hyper_edges_used": [],
+    "integration_rationale": "..."
+  }
+}</code></pre>
+          </div>
+          <div class="prompt-footer">End of Prompt 01</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 02</span>
+            <span class="prompt-name">Judgment Agent</span>
+            <span class="prompt-part">Single-Part</span>
+          </div>
+          <figcaption><strong>Prompt for Judgment Agent.</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template</div>
+            <p><strong>Task:</strong></p>
+            <ul>
+              <li>You are the <strong>Judgment Agent</strong>.</li>
+              <li>
+                Given <code>{question_text}</code>, <code>{options_text}</code>, persona outputs, and a pre-computed vote
+                summary, select <strong>exactly one</strong> final option by adjudicating <strong>only</strong> the Persona
+                Agents' outputs.
+              </li>
+              <li>
+                Your decision must be based <strong>exclusively</strong> on: (1) <strong>Persona outputs</strong> (primary
+                evidence) and (2) <strong>Vote summary</strong> (secondary context; do not recompute).
+              </li>
+              <li>
+                <strong>Prohibited:</strong> adding new facts or inventing any demographics/values/edges beyond what
+                personas explicitly stated.
+              </li>
+            </ul>
+
+            <p><strong>Inputs:</strong></p>
+            <ul>
+              <li><strong>[USER QUESTION]</strong>: <code>{question_text}</code></li>
+              <li><strong>[RESPONSE OPTIONS]</strong>: <code>{options_text}</code></li>
+              <li><strong>[VOTE SUMMARY]</strong>: <code>{vote_summary}</code></li>
+              <li><strong>[PERSONA OUTPUTS]</strong>: <code>{persona_outputs}</code></li>
+            </ul>
+
+            <p><strong>Strict Rules:</strong></p>
+            <ul>
+              <li>Use <strong>only</strong> information in <strong>[PERSONA OUTPUTS]</strong> and <strong>[VOTE SUMMARY]</strong>.</li>
+              <li>Treat vote counts as <strong>correct and immutable</strong>; do not recount, estimate, or modify them.</li>
+              <li>Do not introduce any new persona attributes unless explicitly stated in persona outputs.</li>
+              <li>Do not use value/edge labels as standalone evidence; summarize evidence in natural language grounded in persona statements.</li>
+            </ul>
+
+            <p><strong>Decision Procedure:</strong></p>
+            <ul>
+              <li>
+                <strong>A) Evidence Strength (Primary):</strong> Prefer the option supported by explicit, internally
+                consistent persona reasoning grounded in stated demographics/values/edges.
+              </li>
+              <li>
+                <strong>B) Vote Summary (Secondary):</strong> Use vote counts only to break ties or confirm when evidence
+                strength is comparable.
+              </li>
+              <li>
+                <strong>C) Relevance (Tie-breaker):</strong> If still tied, prefer evidence whose explicitly stated
+                demographics are more directly relevant to the question.
+              </li>
+            </ul>
+
+            <p><strong>Output Format (JSON only):</strong></p>
+            <pre><code>{
+  "final_answer": "&lt;value&gt;: &lt;text&gt;",
+  "reasoning": "..."
+}</code></pre>
+          </div>
+          <div class="prompt-footer">End of Prompt 02</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 03</span>
+            <span class="prompt-name">Object-Property Generation Agent</span>
+            <span class="prompt-part">Part 1 of 4</span>
+          </div>
+          <figcaption><strong>Prompt for Object-Property Generation Agent.</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template</div>
+            <p><strong>Header:</strong></p>
+            <ul>
+              <li>You are an expert ontology engineer specialised in OWL 2 ontologies using Turtle syntax.</li>
+              <li>
+                Your task is to generate <strong>only object properties</strong> that model <strong>directional relationships</strong>
+                between value-derived classes of the World Values Survey (WVS) ontology.
+              </li>
+              <li>You are working with an existing ontology. Its full class hierarchy is provided below:</li>
+            </ul>
+
+            <p><strong>Ontology Snapshot:</strong></p>
+            <ul>
+              <li>The following ontology snippet defines <strong>all OWL classes you are allowed to use</strong>.</li>
+              <li>You must <strong>not</strong> invent any new OWL classes.</li>
+              <li>All rdfs:domain and rdfs:range assignments must reference classes that appear in this snippet.</li>
+            </ul>
+
+            <p><code>{ONTOLOGY_TTL}</code></p>
+
+            <ul>
+              <li>Your job is <strong>not</strong> to modify the existing hierarchy.</li>
+              <li>Your job is to add <strong>only OWL object properties</strong> that express relations implied by the current Competency Question (CQ).</li>
+              <li>
+                You follow a <strong>memoryless CQ-by-CQ</strong> pattern:
+                <ul>
+                  <li>You handle exactly <strong>one CQ per call</strong>.</li>
+                  <li>You forget all previous calls.</li>
+                  <li>You never reuse previous object properties unless explicitly shown.</li>
+                  <li>You never assume prior ontology state beyond what is in this prompt.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <p><strong>Helper:</strong></p>
+            <ul>
+              <li>You must generate OWL object properties in valid Turtle syntax under the following rules:</li>
+            </ul>
+
+            <p><strong>1. Object properties only</strong></p>
+            <ul>
+              <li>
+                Each new property MUST declare <code>rdf:type owl:ObjectProperty</code> and specify exactly one existing
+                class as <code>rdfs:domain</code> and one existing class as <code>rdfs:range</code>.
+              </li>
+              <li>
+                You MUST NOT create new classes, data properties, individuals, subclass axioms, <code>owl:Restriction</code>,
+                reifications, inverse properties, or property chains.
+              </li>
+            </ul>
+
+            <p><strong>2. Directionality</strong></p>
+            <ul>
+              <li>Domain = conceptual source (cause/driver)</li>
+              <li>Range = conceptual target (effect/outcome)</li>
+            </ul>
+
+            <p><strong>3. Naming of object properties (IRI)</strong></p>
+            <ul>
+              <li>Use prefix <code>wvs:</code></li>
+              <li>
+                The local name MUST be:
+                <ul>
+                  <li>a single English verb in base form, e.g., <code>reduce</code>, <code>increase</code>, <code>undermine</code>, OR</li>
+                  <li>a short verb phrase written in <code>snake_case</code> that clarifies the directionality, e.g., <code>reduce_support</code>, <code>increase_concern</code>, <code>weaken_trust</code>.</li>
+                </ul>
+              </li>
+              <li>You MUST NOT embed any domain or range class names (e.g., <code>reduce_outgroup_tolerance</code> is forbidden).</li>
+              <li>The local name must use only lowercase letters and underscores (<code>snake_case</code>), never CamelCase.</li>
+            </ul>
+          </div>
+          <div class="prompt-footer">End of Prompt 03 · Part 1 of 4</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 03</span>
+            <span class="prompt-name">Object-Property Generation Agent</span>
+            <span class="prompt-part">Part 2 of 4</span>
+          </div>
+          <figcaption><strong>Prompt for Object-Property Generation Agent (continued).</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template (continued)</div>
+            <p><strong>4. Labels (natural-language)</strong></p>
+            <ul>
+              <li>Each object property MUST include exactly one <code>rdfs:label</code> (@en).</li>
+              <li>
+                The label MUST be a full declarative English sentence that includes:
+                <ul>
+                  <li>the domain class concept (with capitalization matching its label, e.g., "Generalized Trust"),</li>
+                  <li>the verb,</li>
+                  <li>the range class concept (with capitalization matching its label, e.g., "Institutional Confidence").</li>
+                </ul>
+              </li>
+              <li>The sentence MUST begin with a capital letter, use standard English spacing, avoid CamelCase inside the sentence, not end with a period, and reflect the correct direction.</li>
+            </ul>
+
+            <p><strong>5. Minimality</strong></p>
+            <ul>
+              <li>It is common and acceptable to create <strong>zero</strong> object properties.</li>
+              <li>Only create object properties if the CQ implies an actual directional conceptual relation that you can justify.</li>
+              <li>If NO meaningful directional relation exists, output zero properties: only output the prefix header + ontology declaration.</li>
+            </ul>
+
+            <p><strong>6. Class selection</strong></p>
+            <ul>
+              <li>Always choose the most specific allowed class that appears in the ontology snippet.</li>
+              <li>Avoid using top-level categories unless the CQ clearly refers to high-level concepts.</li>
+            </ul>
+
+            <p><strong>Story:</strong></p>
+            <ul>
+              <li>
+                You are modelling <strong>cross-domain value relations</strong> in a WVS-based ontology to support a
+                hypergraph-style retrieval-augmented generation system.
+              </li>
+              <li>
+                Nodes (hypernodes) correspond to value concepts (OWL classes), such as:
+                <ul>
+                  <li><code>wvs:GeneralizedTrust</code></li>
+                  <li><code>wvs:OutgroupTolerance</code></li>
+                  <li><code>wvs:ReligiousImportance</code></li>
+                  <li><code>wvs:PerceptionsOfMigration</code></li>
+                  <li><code>wvs:PerceptionsOfSecurity</code></li>
+                  <li><code>wvs:PoliticalParticipationActivities</code></li>
+                  <li>etc.</li>
+                </ul>
+              </li>
+              <li>
+                Edges (hyperedges) will be derived from your object properties:
+                <ul>
+                  <li>The domain class and the range class of each object property become the endpoints of a directional edge.</li>
+                  <li>The semantic content of the edge is given by the object property label.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <p><strong>Runtime inputs</strong></p>
+            <ul>
+              <li>
+                Your ontology will be used to answer competency questions (CQs), such as:
+                <ul>
+                  <li>"How do subclasses of Happiness and wellbeing influence subclasses of the Perceptions of migration domain?"</li>
+                  <li>"How do subclasses of Perceptions about science and technology influence subclasses of the Religious values domain?"</li>
+                </ul>
+              </li>
+              <li>
+                At runtime, the user message will always contain:
+                <ul>
+                  <li>One current CQ in natural language, clearly marked.</li>
+                  <li>One RESPONDENT_DATA_JSON block (the current respondent).</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+          <div class="prompt-footer">End of Prompt 03 · Part 2 of 4</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 03</span>
+            <span class="prompt-name">Object-Property Generation Agent</span>
+            <span class="prompt-part">Part 3 of 4</span>
+          </div>
+          <figcaption><strong>Prompt for Object-Property Generation Agent (continued).</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template (continued)</div>
+            <p><strong>Your task for each call is to:</strong></p>
+            <ul>
+              <li>Read the CQ and identify the main <strong>source</strong> and <strong>target</strong> value concepts.</li>
+              <li>Map them to the best-matching existing classes in the WVS ontology (prefer specific subclasses whenever possible).</li>
+              <li>Decide the most appropriate <strong>direction</strong> (domain -&gt; range).</li>
+              <li>Choose a concise English verb phrase that describes the relationship.</li>
+              <li>
+                Declare one or more new object properties in Turtle that capture these relations:
+                <ul>
+                  <li>Create new properties ONLY IF the CQ genuinely implies a directional semantic relation between two existing WVS classes.</li>
+                  <li>If the CQ does NOT express any meaningful or inferable relation between classes, do NOT create any object property; in that case, output only the required prefix header and ontology declaration.</li>
+                </ul>
+              </li>
+            </ul>
+
+            <p><strong>For this call, you must handle the following CQ:</strong></p>
+            <p><code>{CQS}</code></p>
+
+            <p><strong>Focus within the CQ:</strong></p>
+            <ul>
+              <li>
+                In this CQ, your primary focus is on the <strong>value domains that are explicitly mentioned in the question</strong>
+                (for example, Economic Values, Social Values, Perceptions of Security, Perceptions of Migration, etc.).
+              </li>
+              <li>Treat these high-level domains only as anchors: your actual modelling must happen at the level of their <strong>specific subclasses</strong>, not at the level of the broad domain classes.</li>
+            </ul>
+
+            <p><strong>Concretely:</strong></p>
+            <ul>
+              <li>Identify which domains the CQ linguistically treats as sources/causes/drivers and which domains it treats as targets/effects/outcomes.</li>
+              <li>Within the source domains, select the most appropriate subclasses as candidates for <code>rdfs:domain</code>.</li>
+              <li>Within the target domains, select the most appropriate subclasses as candidates for <code>rdfs:range</code>.</li>
+              <li>Prefer connections between concrete subclasses across domains, and avoid using generic top-level domain classes when a more specific subclass is available.</li>
+            </ul>
+
+            <p><strong>Respondent-data grounding:</strong></p>
+            <ul>
+              <li>The data that grounds these concepts comes from WVS respondent data.</li>
+              <li>Each API call provides <strong>one current respondent</strong> in JSON form, with a structure similar to:</li>
+            </ul>
+
+            <p><strong>RESPONDENT_DATA_JSON (Python-style dict or JSON object):</strong></p>
+            <pre><code>{
+  "Q1": {
+    "category": "Social Values, Norms, Stereotypes",
+    "question": "On a scale of 1 to 4 ... how important is family in your life?",
+    "response": "Very important"
+  },
+  "Q46": {
+    "category": "Happiness and Wellbeing",
+    "question": "Taking all things together, how would you rate your overall happiness?",
+    "response": "Very happy"
+  },
+  "Q57": {
+    "category": "Social Capital, Trust and Organizational Membership",
+    "question": "Generally speaking, would you say that most people can be trusted ... ?",
+    "response": "Need to be very careful"
+  },
+  ...
+}</code></pre>
+
+            <p><strong>Current respondent data:</strong></p>
+            <p><code>{{RESPONDENT_DATA_JSON}}</code></p>
+
+            <p><strong>Important:</strong></p>
+            <ul>
+              <li>The <strong>categories</strong> in the JSON correspond exactly to the 12 value domains above.</li>
+              <li>The <strong>questions</strong> and <strong>responses</strong> give you an intuition about how a concrete person might link different value dimensions (e.g. high religiosity + low tolerance + strong security concerns).</li>
+              <li>However, you are <strong>not</strong> modelling this single person.</li>
+              <li>You are modelling <strong>general conceptual relations</strong> between classes that could explain, in the abstract, such patterns.</li>
+            </ul>
+
+            <p><strong>Use the respondent data as story-like grounding:</strong></p>
+            <ul>
+              <li>to observe which value domains the respondent expresses strongly or weakly,</li>
+              <li>to infer whether the relation suggested by the CQ is likely positive or negative,</li>
+              <li>to select a concise English verb that best matches the respondent's pattern,</li>
+              <li>to ensure that the chosen direction and verb feel plausible given the respondent's tendencies,</li>
+              <li>but never to create individuals or encode question IDs directly.</li>
+            </ul>
+
+            <p><strong>Footer:</strong></p>
+            <ul>
+              <li>When you answer, you must obey the following <strong>hard constraints</strong>:</li>
+            </ul>
+
+            <p><strong>1. Output format</strong></p>
+            <ul>
+              <li>Your <strong>entire answer</strong> must be <strong>valid Turtle</strong>.</li>
+              <li>Do <strong>not</strong> include any natural language explanation, bullets, or comments.</li>
+              <li>Do <strong>not</strong> include section headers such as <code>[Header]</code>, <code>[Helper]</code>, <code>[Story]</code>, or <code>[Footer]</code> in your output.</li>
+              <li>Do <strong>not</strong> include <code>#</code> comments in the Turtle.</li>
+              <li>The output must be directly loadable by an OWL 2 tool such as Protege.</li>
+            </ul>
+
+            <p><strong>2. Prefixes</strong></p>
+            <ul>
+              <li>At the very top of your output, always include exactly the following prefix and base declarations:</li>
+            </ul>
+
+            <pre><code>@prefix : &lt;http://cultural-alignment.org/wvs#&gt; .
+@prefix owl: &lt;http://www.w3.org/2002/07/owl#&gt; .
+@prefix rdf: &lt;http://www.w3.org/1999/02/22-rdf-syntax-ns#&gt; .
+@prefix wvs: &lt;http://cultural-alignment.org/wvs#&gt; .
+@prefix xml: &lt;http://www.w3.org/XML/1998/namespace&gt; .
+@prefix xsd: &lt;http://www.w3.org/2001/XMLSchema#&gt; .
+@prefix rdfs: &lt;http://www.w3.org/2000/01/rdf-schema#&gt; .
+@base &lt;http://cultural-alignment.org/wvs#&gt; .
+
+&lt;http://cultural-alignment.org/wvs#&gt; rdf:type owl:Ontology .</code></pre>
+          </div>
+          <div class="prompt-footer">End of Prompt 03 · Part 3 of 4</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 03</span>
+            <span class="prompt-name">Object-Property Generation Agent</span>
+            <span class="prompt-part">Part 4 of 4</span>
+          </div>
+          <figcaption><strong>Prompt for Object-Property Generation Agent (continued).</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template (continued)</div>
+            <p><strong>3. Content constraints</strong></p>
+            <ul>
+              <li>Do <strong>not</strong> create new OWL classes, data properties, individuals, or restrictions; do <strong>not</strong> modify or delete existing classes; do <strong>not</strong> introduce blank nodes; and do <strong>not</strong> use <code>owl:unionOf</code>, <code>owl:intersectionOf</code>, <code>owl:Restriction</code>, or other complex OWL constructors.</li>
+              <li>Only add <strong>owl:ObjectProperty</strong> declarations with exactly one existing class as <code>rdfs:domain</code>, exactly one existing class as <code>rdfs:range</code>, and one English sentence as <code>rdfs:label</code> (@en).</li>
+            </ul>
+
+            <p><strong>4. No conversation</strong></p>
+            <ul>
+              <li>Do <strong>not</strong> explain what you are doing.</li>
+              <li>Do <strong>not</strong> apologise.</li>
+              <li>Do <strong>not</strong> ask questions.</li>
+              <li>Do <strong>not</strong> output anything other than Turtle Syntax.</li>
+            </ul>
+
+            <p><strong>5. Memoryless CQbyCQ behaviour</strong></p>
+            <ul>
+              <li>Treat <strong>each call independently</strong>, as if you are seeing the CQ and respondent data for the first time.</li>
+              <li>Do not refer to previous CQs or previous ontology fragments.</li>
+              <li>Do not try to summarise or merge previous results in your output.</li>
+              <li>Just generate the object properties needed to model the <strong>current</strong> CQ.</li>
+            </ul>
+
+            <p><strong>Your final output for each call must therefore be:</strong></p>
+            <ul>
+              <li>A Turtle document starting with the fixed prefix and ontology header above,</li>
+              <li>Followed only by a small set of <code>owl:ObjectProperty</code> declarations that model the given CQ as directional value relations between existing WVS classes.</li>
+            </ul>
+
+            <p><strong>Critical Instruction: Sensitive Value Judgments</strong></p>
+            <ul>
+              <li>This ontology-generation task may involve sensitive, controversial, or politically charged value dimensions (e.g., ethnic relations, national identity, immigration attitudes, religious norms, gender values, security preferences, etc.).</li>
+              <li>You MUST NOT default to neutrality or avoid making value-linked inferences when the CQ and respondent data clearly suggest a directional conceptual relationship.</li>
+              <li>You are allowed to provide analytical, conceptual, and research-oriented value judgments ONLY in the context of modelling abstract relationships between OWL classes.</li>
+              <li>These judgments must be grounded strictly in the ontology, logically inferred from value dimensions, expressed as directional influence relations, written without endorsing or promoting any real-world group, and focused entirely on conceptual modelling.</li>
+              <li>Do NOT suppress or weaken the relationship because the topic may seem sensitive.</li>
+              <li>Your role in this task is to faithfully encode the conceptual structure implied by the CQ and respondent data, even if the subject matter is sensitive or controversial.</li>
+            </ul>
+          </div>
+          <div class="prompt-footer">End of Prompt 03 · Part 4 of 4</div>
+        </figure>
+
+        <figure class="visual table-block prompt-block">
+          <div class="prompt-banner">
+            <span class="prompt-chip">Prompt 04</span>
+            <span class="prompt-name">Value Profile Generation Agent</span>
+            <span class="prompt-part">Single-Part</span>
+          </div>
+          <figcaption><strong>Prompt for Value Profile Generation Agent.</strong></figcaption>
+          <div class="prompt-body">
+            <div class="prompt-title">Prompt Template</div>
+            <p><strong>Task:</strong></p>
+            <ul>
+              <li>You are an expert social-science researcher.</li>
+              <li>Summarize the respondent's values for <code>{domain_label}</code> based on the provided Q&amp;A pairs.</li>
+            </ul>
+
+            <p><strong>Inputs:</strong></p>
+            <ul>
+              <li><strong>[TAXONOMY]</strong>: <code>{domain_taxonomy_yaml}</code></li>
+              <li>
+                <strong>[RESPONDENT ANSWERS]</strong> (Format: <code>"- Q: Question | R: Response"</code>):
+                <code>{value_input_yaml}</code>
+              </li>
+            </ul>
+
+            <p><strong>Strict Rules:</strong></p>
+            <ul>
+              <li><strong>Zero fabrication:</strong> Every single statement MUST be directly supported by the provided answers; do NOT invent, guess, or hallucinate information.</li>
+              <li><strong>Coverage constraint:</strong> If there is <strong>at least one</strong> Q&amp;A pair related to a subcategory, you MUST write a summary; only skip a subcategory if there is absolutely <strong>zero</strong> relevant data.</li>
+              <li><strong>Style (telegraphic):</strong> Omit the subject (e.g., "The respondent", "They"); start sentences directly with verbs or key adjectives; e.g., "Strongly values family..." (O) / "The respondent values..." (X).</li>
+              <li><strong>Length:</strong> All summaries must be concise (approximately 50 tokens). For <code>{domain_label}</code>, do NOT list details; provide a high-level synthesis. For subcategories, focus on specific beliefs and attitudes.</li>
+              <li>Do NOT output any text other than the YAML block.</li>
+            </ul>
+
+            <p><strong>Output Format (YAML only):</strong></p>
+            <pre><code>{domain_label}: &gt;
+  (High-level synthesis of value orientation, starting with verb)
+Subcategory 1: &gt;
+  (Specific summary, starting with verb)
+Subcategory 2: &gt;
+  (Specific summary, starting with verb)</code></pre>
+          </div>
+          <div class="prompt-footer">End of Prompt 04</div>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 10;">
+        <h2>Case Study</h2>
+        <h3>Case Study: GSS</h3>
+        <figure class="visual">
+          <div class="media media-case">
+            <a class="media-link" href="assets/fig/case1.pdf"><img src="assets/fig/case1.png" alt="Figure: case1" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Case study(GSS):</strong> Evangelizing Preferences. For a target respondent profile, retrieved summaries
+            from demographically similar individuals provide contextual signals about how faith commitment interacts
+            with respect for others' autonomy. Aggregating these perspectives yields a final answer that reflects the
+            target's most plausible choice while mitigating stereotype-driven inference and improving values alignment.
+          </figcaption>
+        </figure>
+
+        <h3>Case Study: CGSS</h3>
+        <figure class="visual">
+          <div class="media media-case">
+            <a class="media-link" href="assets/fig/case2.pdf"><img src="assets/fig/case2.png" alt="Figure: case2" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Case study(CGSS):</strong> Purpose of Marriage. Retrieved summaries complement the target profile with
+            family- and responsibility-oriented value cues, supporting nuanced interpretation of what marriage primarily
+            represents. The final answer is inferred by consolidating similar individuals' perspectives, capturing
+            contemporary norm-sensitive reasoning beyond generic common sense.
+          </figcaption>
+        </figure>
+
+        <h3>Case Study: EVS</h3>
+        <figure class="visual">
+          <div class="media media-case">
+            <a class="media-link" href="assets/fig/case3.pdf"><img src="assets/fig/case3.png" alt="Figure: case3" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Case study(EVS):</strong> Social Distance Toward Jews. The target profile is enriched with retrieved
+            summaries that foreground tolerance-related value cues and their interactions, helping interpret
+            social-distance judgments with contextual sensitivity. By aggregating similar perspectives, the model
+            infers the target's most likely response while reducing demographic over-attribution and stereotyping.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 11;">
+        <h2>Ontology Details</h2>
+        <h3>CQ Examples</h3>
+        <figure class="visual table-block">
+          <figcaption>
+            CQ Examples. Each CQ specifies two domains and asks about the relationships between their subclasses.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>CQ</th>
+                  <th>Content</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>CQ1</td>
+                  <td>How do subclasses of Economic Values influence subclasses of the Political culture and political regimes domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ2</td>
+                  <td>How do subclasses of Ethical values influence subclasses of the Perceptions of corruption domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ3</td>
+                  <td>How do subclasses of Happiness and wellbeing influence subclasses of the Religious values domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ4</td>
+                  <td>How do subclasses of Perceptions about science and technology influence subclasses of the Religious values domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ5</td>
+                  <td>How do subclasses of Perceptions of corruption influence subclasses of the Social capital, trust and organizational membership domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ6</td>
+                  <td>How do subclasses of Perceptions of migration influence subclasses of the Social capital, trust and organizational membership domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ7</td>
+                  <td>How do subclasses of Perceptions of security influence subclasses of the Social values, norms, stereotypes domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ8</td>
+                  <td>How do subclasses of Political culture and political regimes influence subclasses of the Social values, norms, stereotypes domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ9</td>
+                  <td>How do subclasses of Political interest and political participation influence subclasses of the Social capital, trust and organizational membership domain?</td>
+                </tr>
+                <tr>
+                  <td>CQ10</td>
+                  <td>How do subclasses of Social capital, trust and organizational membership influence subclasses of the Social values, norms, stereotypes domain?</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+        <figure class="visual table-block">
+          <figcaption>
+            Pre-defined value taxonomy manually constructed through systematic analysis of WVS survey questions. This
+            ontology taxonomy comprises 12 top-level categories and 64 subcategories, providing a fixed knowledge
+            structure for ontology-grounded retrieval and multi-agent cultural reasoning.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Value Domain</th>
+                  <th>Fine-grained Categories</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Economic Values</strong></td>
+                  <td>Economic Equality Preference, Environment Versus Growth Preference, Government Responsibility Preference, Market Competition Preference, Ownership Preference, Work Success Beliefs</td>
+                </tr>
+                <tr>
+                  <td><strong>Ethical Values</strong></td>
+                  <td>Justifiability of Dishonest Behaviors, Moral Ambiguity Perception, Sexual Behavior Ethics, State Surveillance Rights, Violence Ethics</td>
+                </tr>
+                <tr>
+                  <td><strong>Happiness and Wellbeing</strong></td>
+                  <td>Basic Needs Security, Health Status, Intergenerational Comparison, Perceived Life Control, Subjective Wellbeing</td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions about Science and Technology</strong></td>
+                  <td>Importance of Science Knowledge, Science and Technology Optimism, Technology World Impact Evaluation</td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Corruption</strong></td>
+                  <td>Accountability Risk Perception, Bribe Experience, Corruption Gender Stereotype, Corruption In Institutions</td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Migration</strong></td>
+                  <td>Immigration Effects Perception, Immigration Policy Preference, Specific Immigration Impact Beliefs</td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Security</strong></td>
+                  <td>Economic Security Worry, National Defense Willingness, Neighborhood Safety Incidence, Neighborhood Security Feelings, Political Security Concerns, Security-related Behavior, Value Trade-off Preferences, Victimization Experience</td>
+                </tr>
+                <tr>
+                  <td><strong>Political Culture and Political Regimes</strong></td>
+                  <td>Democratic Characteristics Importance, Democratic Governance Perception, Human Rights Perception, Ideological Self-placement, National Identity, Regime System Approval, Territorial Attachment</td>
+                </tr>
+                <tr>
+                  <td><strong>Political Interest and Political Participation</strong></td>
+                  <td>Election Importance and Voice, Electoral Integrity And Efficacy, News Media Use For Politics, Political Interest, Political Participation Activities, Voting Behavior</td>
+                </tr>
+                <tr>
+                  <td><strong>Religious Values</strong></td>
+                  <td>Belief in Religious Concepts, Religion versus Science, Religious Authority Attitudes, Religious Exclusivism, Religious Identity, Religious Importance</td>
+                </tr>
+                <tr>
+                  <td><strong>Social Capital, Trust and Organizational Membership</strong></td>
+                  <td>Civic Organization Membership, Generalized Trust, Institutional Confidence, Interpersonal Trust</td>
+                </tr>
+                <tr>
+                  <td><strong>Social Values, Norms, Stereotypes</strong></td>
+                  <td>Attitudes Toward Future Social Change, Child Rearing Values, Family and Social Duty Attitudes, Gender Role Attitudes, Importance In Life, Outgroup Tolerance, Work Obligation Attitudes</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+
+        <figure class="visual table-block">
+          <figcaption>
+            Representative ontology triples for each value domain. The "Domain Category" column indicates the high-level
+            category to which the subject class of the ontology triple belongs. The last row (*) represents cross-domain
+            triples where the value class falls under "Social values, norms, stereotypes".
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Domain Category</th>
+                  <th>Ontology Triples</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><strong>Economic Values</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Work Success Beliefs, reinforces, Work Obligation Attitudes&gt;</div>
+                      <div>&lt;Government Responsibility Preference, reduces, Economic Security Worry&gt;</div>
+                      <div>&lt;Market Competition Preference, may slightly increase, Political Interest&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Ethical Values</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;State Surveillance Rights, may strengthen, Institutional Confidence&gt;</div>
+                      <div>&lt;Justifiability of Dishonest Behaviors, consistently heightens perception of, Corruption In Institutions&gt;</div>
+                      <div>&lt;Moral Ambiguity Perception, erodes feeling of, Perceived Life Control&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Happiness and Wellbeing</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Perceived Life Control, can weakly reduce, Economic Security Worry&gt;</div>
+                      <div>&lt;Subjective Wellbeing, consistently fosters, Outgroup Tolerance&gt;</div>
+                      <div>&lt;Basic Needs Security, tends to alleviate, Economic Security Worry&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions about Science and Technology</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Technology World Impact Evaluation, may foster openness to, Attitudes Toward Future Social Change&gt;</div>
+                      <div>&lt;Science and Technology Optimism, tends to alleviate, Economic Security Worry&gt;</div>
+                      <div>&lt;Science and Technology Optimism, tends to positively promote, Attitudes Toward Future Social Change&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Corruption</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Corruption In Institutions, dampens, Political Interest&gt;</div>
+                      <div>&lt;Bribe Experience, may reduce, Interpersonal Trust&gt;</div>
+                      <div>&lt;Accountability Risk Perception, may slightly increase, Economic Security Worry&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Migration</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Immigration Effects Perception, significantly reduces, Generalized Trust&gt;</div>
+                      <div>&lt;Immigration Effects Perception, tends to polarize towards exclusivism, Religious Exclusivism&gt;</div>
+                      <div>&lt;Specific Immigration Impact Beliefs, may motivate, Political Participation Activities&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Perceptions of Security</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Neighborhood Security Feelings, consistently enhances, Interpersonal Trust&gt;</div>
+                      <div>&lt;Political Security Concerns, erodes, Institutional Confidence&gt;</div>
+                      <div>&lt;Economic Security Worry, reinforces, Work Obligation Attitudes&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Political Culture and Political Regimes</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Democratic Governance Perception, fundamentally underpins, Institutional Confidence&gt;</div>
+                      <div>&lt;National Identity, may boost, Voting Behavior&gt;</div>
+                      <div>&lt;Regime System Approval, actively encourages participation in, Voting Behavior&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Political Interest and Participation</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Voting Behavior, may reinforce, Institutional Confidence&gt;</div>
+                      <div>&lt;Political Participation Activities, strongly drives, Civic Organization Membership&gt;</div>
+                      <div>&lt;Political Participation Activities, tends to foster acceptance of, Outgroup Tolerance&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Religious Values</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Religious Importance, strongly reinforces sense of, Family and Social Duty Attitudes&gt;</div>
+                      <div>&lt;Religious Importance, actively promotes participation in, Civic Organization Membership&gt;</div>
+                      <div>&lt;Religious Exclusivism, severely undermines, Outgroup Tolerance&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>Social Capital, Trust and Org. Membership</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Generalized Trust, fundamentally underpins, Outgroup Tolerance&gt;</div>
+                      <div>&lt;Interpersonal Trust, helps cultivate, Outgroup Tolerance&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td><strong>*</strong></td>
+                  <td>
+                    <div class="cell-lines">
+                      <div>&lt;Subjective Wellbeing, tends to heighten appreciation of, Importance In Life&gt;</div>
+                      <div>&lt;Work Success Beliefs, reinforces, Work Obligation Attitudes&gt;</div>
+                      <div>&lt;Science and Technology Optimism, tends to positively promote, Attitudes Toward Future Social Change&gt;</div>
+                    </div>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/ontology_init.pdf"><img src="assets/fig/ontology_init.png" alt="Figure: ontology init" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Visualization of the most primitive stage of our value ontology, where only the initial taxonomy is defined
+            before constructing the ontology using competency questions (CQs). Nodes with the same color represent
+            classes belonging to the same category. The large nodes denote the 12 parent classes directly under
+            <code>owl:Thing</code>, while the small nodes correspond to their subclasses. All grey edges in this figure
+            represent <em>subClassOf</em> relations.
+          </figcaption>
+        </figure>
+
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/ontology_stage_2.pdf"><img src="assets/fig/ontology_stage_2.png" alt="Figure: ontology stage 2" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Visualization of the intermediate stage of ontology construction. Subclasses from the Economic domain are
+            now interconnected with subclasses from other domains, establishing semantic relationships across
+            categories. For example: Economic Equality may increase Immigration Effects, Market Competition widely
+            promotes Science Optimism. The ontology progressively forms fine-grained relationships by iteratively
+            processing each competency question (CQ).
+          </figcaption>
+        </figure>
+
+        <figure class="visual">
+          <div class="media-stack">
+            <div class="media">
+              <a class="media-link" href="assets/fig/ontology_degree.pdf"><img src="assets/fig/ontology_degree.png" alt="Figure: ontology degree" loading="lazy" decoding="async"></a>
+            </div>
+            <div class="media">
+              <a class="media-link" href="assets/fig/ontology_plt_legend.pdf"><img src="assets/fig/ontology_plt_legend.png" alt="Figure: ontology plt legend" loading="lazy" decoding="async"></a>
+            </div>
+          </div>
+          <figcaption>
+            Final ontology structure with <strong>76 classes</strong> and <strong>150</strong> object-property pairs. Node
+            colors show the <strong>12 parent value categories</strong>, and node size scales with the sum of in-degree and
+            out-degree, so that larger nodes mark classes that are frequently instantiated in ontology triples and
+            maintain rich relational connections to many other classes.
+          </figcaption>
+        </figure>
+      </section>
+
+      <section class="section-block" style="--section-index: 12;">
+        <h2>Ablation Study Details</h2>
+        <h3>VARYING THE NUMBER OF RETRIEVED INDIVIDUALS Full Figures</h3>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/k_ablation_all_datasets.pdf"><img src="assets/fig/k_ablation_all_datasets.png" alt="Figure: k ablation all datasets" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            Detailed ablation study on retrieval size K across six regional datasets. Each subplot shows the performance
+            comparison of four models (GPT-4o mini, Gemini 2.5, QWEN 2.5, EXAONE 3.5) across K in {1, 3, 5, 10}. Red
+            vertical dashed lines indicate the best K for each dataset, and black horizontal dashed lines show the
+            dataset-specific mean accuracy. The results demonstrate that K=5 achieves optimal or near-optimal performance
+            across most datasets, while K=10 often leads to performance degradation due to increased noise in the
+            retrieved context.
+          </figcaption>
+        </figure>
+
+        <h3>IMPACT OF MULTI-PERSONA REASONING Full Table</h3>
+        <figure class="visual table-block">
+          <figcaption>
+            Detailed breakdown of accuracy scores by region for the full <em>OG-MAR</em> framework compared to the
+            Single-Judge variant (referenced in Section 5.2.3). The highest score between the two methods for each region
+            is highlighted in bold.
+          </figcaption>
+          <div class="table-wrap">
+            <table class="table-wide">
+              <thead>
+                <tr>
+                  <th>Model</th>
+                  <th>Method</th>
+                  <th>EVS</th>
+                  <th>GSS</th>
+                  <th>CGSS</th>
+                  <th>ISD</th>
+                  <th>AFRO</th>
+                  <th>LAPOP</th>
+                  <th>Avg. Acc.</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td rowspan="2">GPT-4o mini</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6206</strong></td>
+                  <td class="num">0.5480</td>
+                  <td class="num"><strong>0.6509</strong></td>
+                  <td class="num">0.6192</td>
+                  <td class="num"><strong>0.5389</strong></td>
+                  <td class="num"><strong>0.6268</strong></td>
+                  <td class="num"><strong>0.6007</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5773</td>
+                  <td class="num"><strong>0.6000</strong></td>
+                  <td class="num">0.6440</td>
+                  <td class="num"><strong>0.6996</strong></td>
+                  <td class="num">0.5293</td>
+                  <td class="num">0.5419</td>
+                  <td class="num">0.5987</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">Gemini 2.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6249</strong></td>
+                  <td class="num">0.5489</td>
+                  <td class="num"><strong>0.7017</strong></td>
+                  <td class="num"><strong>0.7007</strong></td>
+                  <td class="num"><strong>0.5701</strong></td>
+                  <td class="num"><strong>0.6385</strong></td>
+                  <td class="num"><strong>0.6308</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5870</td>
+                  <td class="num"><strong>0.6222</strong></td>
+                  <td class="num">0.5960</td>
+                  <td class="num">0.6551</td>
+                  <td class="num">0.5411</td>
+                  <td class="num">0.6116</td>
+                  <td class="num">0.6022</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">QWEN 2.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.5898</strong></td>
+                  <td class="num">0.5325</td>
+                  <td class="num"><strong>0.5220</strong></td>
+                  <td class="num"><strong>0.6599</strong></td>
+                  <td class="num"><strong>0.5180</strong></td>
+                  <td class="num"><strong>0.6005</strong></td>
+                  <td class="num"><strong>0.5705</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5266</td>
+                  <td class="num"><strong>0.5777</strong></td>
+                  <td class="num">0.4067</td>
+                  <td class="num">0.6485</td>
+                  <td class="num">0.4494</td>
+                  <td class="num">0.5779</td>
+                  <td class="num">0.5311</td>
+                </tr>
+                <tr>
+                  <td rowspan="2">EXAONE 3.5</td>
+                  <td>OG-MAR</td>
+                  <td class="num"><strong>0.6080</strong></td>
+                  <td class="num">0.5636</td>
+                  <td class="num"><strong>0.6307</strong></td>
+                  <td class="num"><strong>0.7810</strong></td>
+                  <td class="num"><strong>0.5045</strong></td>
+                  <td class="num"><strong>0.7022</strong></td>
+                  <td class="num"><strong>0.6316</strong></td>
+                </tr>
+                <tr>
+                  <td>Single-Judge</td>
+                  <td class="num">0.5013</td>
+                  <td class="num"><strong>0.6444</strong></td>
+                  <td class="num">0.4237</td>
+                  <td class="num">0.6900</td>
+                  <td class="num">0.4725</td>
+                  <td class="num">0.6444</td>
+                  <td class="num">0.5627</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </figure>
+
+        <h3>Additional Ablation Study:IMPACT of Retrieved Ontology Triples</h3>
+        <figure class="visual">
+          <div class="media">
+            <a class="media-link" href="assets/fig/hyper_nodes_ablation_2x4.pdf"><img src="assets/fig/hyper_nodes_ablation_2x4.png" alt="Figure: hyper nodes ablation 2x4" loading="lazy" decoding="async"></a>
+          </div>
+          <figcaption>
+            <strong>Ablation study on ontology triples retrieval size.</strong> Performance comparison across N in {1, 3, 5,
+            7, 9} for four LLM backbones on six regional datasets and their average. Red dashed vertical lines mark the
+            Best N where average accuracy across all models peaks for each dataset. Gray dashed horizontal lines show the
+            overall mean accuracy with values displayed. Results demonstrate that N=3 achieves competitive or near-optimal
+            performance across most datasets.
+          </figcaption>
+        </figure>
+      </section>
+    </div>
+  </body>
+</html>
